@@ -1,0 +1,56 @@
+---
+name: "Python Tests"
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  python-tests:
+    name: ${{ matrix.os }}-python-${{ matrix.python-version }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+        python-version:
+          - "3.10"
+          - "3.11"
+          - "3.12"
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up uv
+        if: ${{ matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest' }}
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Set up uv
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: irm https://astral.sh/uv/install.ps1 | iex
+        shell: powershell
+      - name: Setup Python ${{ matrix.python-version }}
+        run: |
+          uv python install ${{ matrix.python-version }}
+          uv venv
+      - name: Activate virtual environment for Linux and macOS
+        if: ${{ matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest' }}
+        run: source .venv/bin/activate
+      - name: Activate virtual environment for Windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: .venv\Scripts\Activate
+        shell: powershell
+      - name: Install dependencies for Linux and macOS
+        if: ${{ matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest' }}
+        run: |
+          if [ -f requirements.txt ]; then uv pip install -r requirements.txt; fi
+      - name: Install dependencies for Windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          if (Test-Path requirements.txt) { uv pip install -r requirements.txt }
+        shell: powershell
+      # - name: Test with pytest
+      #   run: |
+      #     uv pip install pytest
+      #     uv run pytest tests

@@ -1,0 +1,114 @@
+[project]
+name = "crossdb_query"
+description = "Execute a SQL file on all PostgreSQL databases on a host."
+dynamic = ["version"]
+authors = [{ name = "Caleb Grant", email = "grantcaleb22@gmail.com" }]
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Operating System :: OS Independent",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+]
+dependencies = ["psycopg2-binary>=2.9.9"]
+keywords = ["postgres", "postgresql", "sql", "database", "query", "crossdb"]
+
+[project.scripts]
+crossdb-query = "src.crossdb_query:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "src.crossdb_query.__version__" }
+
+[project.urls]
+Repository = "https://github.com/geocoug/crossdb-query"
+Issues = "https://github.com/geocoug/crossdb-query/issues"
+
+[tool.pytest.ini_options]
+addopts = ["--cov=crossdb-query", "-s", "-v"]
+testpaths = ["tests"]
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s - %(name)s - %(levelname)s: %(message)s"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+  ".bzr",
+  ".direnv",
+  ".eggs",
+  ".git",
+  ".hg",
+  ".mypy_cache",
+  ".nox",
+  ".pants.d",
+  ".ruff_cache",
+  ".svn",
+  ".tox",
+  ".venv",
+  "__pypackages__",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+  "node_modules",
+  "venv",
+  "*cache*",
+]
+# The line length to use when enforcing long-lines violations (like E501).
+line-length = 120
+# Assume Python 3.12.
+target-version = "py312"
+# Whether to automatically exclude files that are ignored by .ignore, .gitignore, .git/info/exclude, and global gitignore files.
+respect-gitignore = true
+# Default autofix behavior
+fix = true
+
+[tool.ruff.lint]
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+# A list of rule codes or prefixes to enable.
+# Prefixes can specify exact rules (like F841), entire categories (like F), or anything in between.
+# Default = Pyflakes `E` and `F` codes.
+select = [
+  "E",
+  "F",
+  "Q",
+  "B",
+  "I",
+  "UP",
+  "N",
+  "S",
+  "C4",
+  "T20",
+  "RET",
+  "SIM",
+  "PD",
+  "RUF",
+]
+ignore = ["S101"]
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
+[tool.bumpversion]
+current_version = "0.0.1"
+commit = true
+commit_args = "--no-verify"
+tag = true
+
+[[tool.bumpversion.files]]
+filename = "src/crossdb_query.py"
