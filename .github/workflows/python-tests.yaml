@@ -8,6 +8,20 @@ on:
 
 jobs:
   python-tests:
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: dev
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     name: ${{ matrix.os }}-python-${{ matrix.python-version }}
     strategy:
       matrix:
@@ -22,7 +36,13 @@ jobs:
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Import PostgreSQL data
+        run: |
+          psql -h localhost -U postgres -d dev -f tests/data.sql
+        env:
+          PGPASSWORD: postgres
       - name: Set up uv
         if: ${{ matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest' }}
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -50,7 +70,13 @@ jobs:
         run: |
           if (Test-Path requirements.txt) { uv pip install -r requirements.txt }
         shell: powershell
-      # - name: Test with pytest
-      #   run: |
-      #     uv pip install pytest
-      #     uv run pytest tests
+      - name: Test with pytest
+        run: |
+          uv pip install pytest
+          uv run pytest tests
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: dev

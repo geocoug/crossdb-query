@@ -60,6 +60,10 @@ update: $(VENV)/bin/activate ## Update pre-commit
 	$(PYTHON) -m pre_commit install --install-hooks
 	$(PYTHON) -m pre_commit autoupdate
 
+test: $(VENV)/bin/activate ## Run unit tests
+	$(PYTHON) -m $(TEST)
+	$(MAKE) clean
+
 lint: $(VENV)/bin/activate ## Run pre-commit hooks
 	$(PYTHON) -m pre_commit install --install-hooks
 	$(PYTHON) -m pre_commit run --all-files
