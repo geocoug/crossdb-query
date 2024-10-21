@@ -258,6 +258,7 @@ def main() -> None:
         except Exception as err:
             logger.error(err)
             db.rollback()
+    db.close()
 
 
 if __name__ == "__main__":
