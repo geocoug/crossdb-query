@@ -15,7 +15,7 @@ __author__ = "Caleb Grant"
 __url__ = "https://github.com/geocoug/crossdb-query"
 __author_email__ = "grantcaleb22@gmail.com"
 __license__ = "GNU GPLv3"
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __description__ = "Execute a SQL file on all PostgreSQL databases on a host. By default, the script will execute the SQL file on all databases on the host. The user can specify a list of databases to include or exclude from the execution."  # noqa
 
 
